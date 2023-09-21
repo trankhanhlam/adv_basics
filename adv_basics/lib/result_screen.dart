@@ -3,9 +3,12 @@ import 'package:adv_basics/question_summary.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
-  const ResultScreen({required this.chosenAnswer, super.key});
+  const ResultScreen(
+      {required this.chosenAnswer, required this.restartTheGame, super.key});
 
   final List<String> chosenAnswer;
+
+  final void Function() restartTheGame;
 
   List<Map<String, Object>> getSummaryData() {
     final List<Map<String, Object>> summary = [];
@@ -32,26 +35,40 @@ class ResultScreen extends StatelessWidget {
       return data['correct_answer'] == data['user_answer'];
     }).length;
 
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'You answer $numberOfCorrectAnswer out of $numberOfQuestion questions correctly!',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
+    return SafeArea(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'You answer $numberOfCorrectAnswer out of $numberOfQuestion questions correctly!',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          QuestionSummary(
-            summaryData: summaryData,
-          ),
-        ],
+            const SizedBox(
+              height: 30,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: QuestionSummary(
+                  summaryData: summaryData,
+                ),
+              ),
+            ),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
+              icon: const Icon(Icons.refresh_sharp),
+              label: const Text("Restart!"),
+              onPressed: restartTheGame,
+            )
+          ],
+        ),
       ),
     );
   }
